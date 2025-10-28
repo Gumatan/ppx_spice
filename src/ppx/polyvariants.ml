@@ -35,8 +35,8 @@ let generate_encoder_case generator_settings unboxed has_attr_as row =
         match constructor_expr with
         | { pexp_desc = Pexp_constant const; pexp_loc } -> (
             match const with
-            | Pconst_string _ -> [%expr Js.Json.String [%e constructor_expr]]
-            | Pconst_float _ -> [%expr Js.Json.Number [%e constructor_expr]]
+            | Pconst_string _ -> [%expr JSON.String [%e constructor_expr]]
+            | Pconst_float _ -> [%expr JSON.Number [%e constructor_expr]]
             | _ -> fail pexp_loc "cannot find a name??")
         | { pexp_loc } -> fail pexp_loc "cannot find a name??"
       in
@@ -70,7 +70,7 @@ let generate_encoder_case generator_settings unboxed has_attr_as row =
         pc_rhs =
           (if unboxed then List.tl rhs_list |> List.hd (* diff *)
            else if has_attr_as then json_expr
-           else [%expr Js.Json.array [%e rhs_list |> Exp.array]]);
+           else [%expr JSON.Encode.array [%e rhs_list |> Exp.array]]);
       }
   (* We don't have enough information to generate a encoder *)
   | Rinherit arg ->

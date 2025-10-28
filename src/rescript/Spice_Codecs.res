@@ -1,11 +1,11 @@
 let falseableEncode = (encoder, opt) =>
   switch opt {
-  | None => Js.Json.Boolean(false)
+  | None => JSON.Boolean(false)
   | Some(v) => encoder(v)
   }
 let falseableDecode = (decoder, json) =>
   switch json {
-  | Js.Json.Boolean(false) => Ok(None)
+  | JSON.Boolean(false) => Ok(None)
   | _ => Belt.Result.map(decoder(json), v => Some(v))
   }
 let falseable = (falseableEncode, falseableDecode)
