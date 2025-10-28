@@ -1,5 +1,5 @@
 {
-  "name": "@Gumatan/ppx-spice",
+  "name": "@greenlabs/ppx-spice",
   "sources": [
     {
       "dir": "src",
