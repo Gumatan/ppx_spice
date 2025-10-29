@@ -303,7 +303,9 @@ let generate_codecs ({ do_encode; do_decode } as generator_settings) row_fields
                    match v with
                    | JSON.Array [||] ->
                        Spice.error "Expected polyvariant, found empty array" v
-                   | JSON.Array json_arr -> [%e decoder_switch]
+                   | JSON.Array json_arr ->
+                       let tagged = json_arr in
+                       [%e decoder_switch]
                    | _ -> Spice.error "Not a polyvariant" v])
   in
 
