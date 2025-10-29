@@ -118,7 +118,7 @@ let nullFromJson = (decoder, json) =>
   | JSON.Null => Ok(Null.Null)
   | _ => Belt.Result.map(decoder(json), v => Null.Value(v))
   }
-Js.null
+
 let resultToJson = (okEncoder, errorEncoder, result): JSON.t => JSON.Array(
   switch result {
   | Ok(v) => [JSON.String("Ok"), okEncoder(v)]

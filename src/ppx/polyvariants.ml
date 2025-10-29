@@ -133,11 +133,11 @@ let generate_decoder_case generator_settings { prf_desc } =
       {
         pc_lhs =
           ( Pconst_string (txt, Location.none, None) |> Pat.constant |> fun v ->
-            Some ([], v) |> Pat.construct (lid "Js.Json.JSONString") );
+            Some ([], v) |> Pat.construct (lid "JSON.String") );
         pc_guard = None;
         pc_rhs =
           [%expr
-            if Js.Array.length tagged != [%e arg_len] then
+            if Array.length tagged != [%e arg_len] then
               Spice.error
                 "Invalid number of arguments to polyvariant constructor" v
             else [%e decoded]];
@@ -273,9 +273,9 @@ let generate_codecs ({ do_encode; do_decode } as generator_settings) row_fields
             (Utils.expr_func ~arity:1
                [%expr
                  fun v ->
-                   match Js.Json.classify v with
-                   | Js.Json.JSONString str_or_num -> [%e decoder_switch]
-                   | Js.Json.JSONNumber str_or_num -> [%e decoder_switch_num]
+                   match v with
+                   | JSON.String str_or_num -> [%e decoder_switch]
+                   | JSON.Number str_or_num -> [%e decoder_switch_num]
                    | _ -> Spice.error "Not a JSONString" v])
         else
           let decoder_default_case =
@@ -300,12 +300,10 @@ let generate_codecs ({ do_encode; do_decode } as generator_settings) row_fields
             (Utils.expr_func ~arity:1
                [%expr
                  fun v ->
-                   match Js.Json.classify v with
-                   | Js.Json.JSONArray [||] ->
+                   match v with
+                   | JSON.Array [||] ->
                        Spice.error "Expected polyvariant, found empty array" v
-                   | Js.Json.JSONArray json_arr ->
-                       let tagged = Js.Array.map Js.Json.classify json_arr in
-                       [%e decoder_switch]
+                   | JSON.Array json_arr -> [%e decoder_switch]
                    | _ -> Spice.error "Not a polyvariant" v])
   in
 
