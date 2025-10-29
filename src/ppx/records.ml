@@ -39,7 +39,7 @@ let generate_encoder decls unboxed =
       in
       Exp.constraint_
         [%expr
-          Js.Json.Object (Js.Dict.fromArray (Spice.filterOptional [%e arrExpr]))]
+          JSON.Object (Dict.fromArray (Spice.filterOptional [%e arrExpr]))]
         Utils.ctyp_json_t
       |> Exp.fun_ Asttypes.Nolabel None [%pat? v]
       |> Utils.expr_func ~arity:1
@@ -55,7 +55,7 @@ let generate_flat_decoder_expr decls =
         let decode_expr =
           match codecs with
           | _, Some decode ->
-              let get_expr = [%expr Js.Dict.get [%e dict_expr] [%e key]] in
+              let get_expr = [%expr Dict.get [%e dict_expr] [%e key]] in
               let decode_applied = [%expr [%e decode]] in
               let opt_map =
                 [%expr Belt.Option.map [%e get_expr] [%e decode_applied]]
@@ -175,8 +175,8 @@ let generate_decoder decls unboxed =
       Utils.expr_func ~arity:1
         [%expr
           fun v ->
-            match (v : Js.Json.t) with
-            | Js.Json.Object dict -> [%e generate_nested_switches decls]
+            match (v : JSON.t) with
+            | JSON.Object dict -> [%e generate_nested_switches decls]
             | _ -> Spice.error "Not an object" v]
 
 let parse_decl generator_settings
